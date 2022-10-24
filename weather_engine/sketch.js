@@ -1,48 +1,67 @@
-let mode = 0;
-var temp_num = 65;
-var temp_descrip = "cloudy"
+let temperature = 0;
+let weather = "";
+let json;
+
+function preload() {
+  // imperial = F, metric = C
+  let url = "https://api.openweathermap.org/data/2.5/weather?q=New%20York&units=metric&APPID=e812164ca05ed9e0344b89ebe273c141";
+  json = loadJSON(url);
+
+  bundle = loadImage("assets/bundle.png");
+  clouds = loadImage("assets/clouds.png");
+  jacket_scarf = loadImage("assets/jacket-scarf.png");
+  light_jacket = loadImage("assets/light-jacket.png");
+  rain = loadImage("assets/rain.png");
+  snow = loadImage("assets/snow.png");
+  sun = loadImage("assets/sun.png");
+  sundress = loadImage("assets/sundress.png");
+
+}
 
 function setup() {
-    myFont = loadFont("Raleway.ttf");
-}
+  createCanvas(200, 200);
 
+  temperature = json.main.temp;
+  weather = json.weather[0].description;
+}
 
 function draw() {
-    resultScreen();
-    // switch (mode) {
-    //     case 0:
-    //       startingScreen();
-    //       break;
-    //     case 1:
-    //       instructScreen();
-    //       break;
-    //     case 2:
-    //       // inputHandle();
-    //       gameOn();
-    //       break;
-    //   }
-}
-
-function resultScreen() {
-    createCanvas(600, 600);
-    background(220);
-    textFont(myFont);
-    textSize(36);    
+    createCanvas(400, 400);
+    background('black');
+    fill('white');
+    textSize(15);
     textAlign(CENTER);
-    text("Today it is " + temp_num + " and " + temp_descrip, 300, 200);
+    text("Location: New York City", 200, 20);
+    push();
+    textSize(20);
+    text("Today, it is " + temperature + "°C and " + weather, 200, 70);
+    pop();
 
-    if (temp_descrip == "raining") {
-        text("Bring an umbrella today", 300, 220);
-        if (temp_num <= 65) {
-            text("Also! Bring an a jacket it's chilly today", 300, 220);
-        } else {
+    if (temperature <= 0) {
+        text("It's freezing out! Bundle up!", 200, 340);
+        image(bundle, 30, 65, 380, 300);
+    } else if ((temperature > 0) && (temperature <= 15)) {
+        text("It's chilly out! Wear a jacket and a scarf!", 200, 340);
+        image(jacket_scarf, 30, 65, 380, 300);
+    } else if  ((temperature > 15) && (temperature <= 25)) {
+        text("Nice temperature! Bring a light jacket just in case!", 200, 340);
+        image(light_jacket, 30, 65, 380, 300);
+    } else {
+        text("It's hot out! Bring out your sun dresses!", 200, 340);
+        image(sundress, 30, 65, 380, 300);
+    }
 
-        }
-
-    } else if (temp_descrip == "sunny") {
-        text("Bring an sunglasses today", 300, 220);
-
-    } else if (tem_descrip == "cloudy") {
-
+    if ((weather.includes("rain")) || (weather.includes("drizzle"))) {
+        text("Rain! Bring an umbrella today", 200, 360);  
+        image(rain, 30, 80, 380, 300); 
+    } else if ((weather.includes("clear"))) {
+        text("Bring your sunglasses today", 200, 360);  
+        image(sun, 30, 80, 380, 300);
+    } else if (weather.includes("snow")) {
+        text("Wear snowboots today!", 200, 360);  
+        image(snow, 30, 80, 380, 300);
+    } else {
+        text("Cozy up for the clouds!", 200, 360);
+        image(clouds, 30, 80, 380, 300);
     }
 }
